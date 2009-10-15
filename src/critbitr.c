@@ -21,6 +21,7 @@ SEXP cbt_make() {
 static void cbt_finalizer(SEXP xp) {
     void *p = R_ExternalPtrAddr(xp);
     if (p) {
+        critbit0_clear(p);
         Free(p);
         R_ClearExternalPtr(xp);
     }
@@ -36,4 +37,16 @@ SEXP cbt_contains(SEXP xp, SEXP cv) {
     const char *u = CHAR(STRING_ELT(cv, 0));
     critbit0_tree *tree = R_ExternalPtrAddr(xp);
     return ScalarInteger(critbit0_contains(tree, u));
+}
+
+static int handle1(const char *v, void *arg)
+{
+    Rprintf("%s\n", v);
+    return 1;
+}
+
+SEXP cbt_prefix(SEXP xp, SEXP prefix) {
+    const char *p = CHAR(STRING_ELT(prefix, 0));
+    critbit0_allprefixed(R_ExternalPtrAddr(xp), p, handle1, NULL);
+    return ScalarInteger(1);
 }

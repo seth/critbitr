@@ -22,3 +22,8 @@ contains <-
 function(tree, what) {
   .Call(cbt_contains, tree@cbt, what)
 }
+
+prefix <-
+function(tree, prefix) {
+  .Call(cbt_prefix, tree@cbt, prefix)
+}
