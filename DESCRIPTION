@@ -1,0 +1,13 @@
+Package: critbitr
+Type: Package
+Title: critbit trees for R
+Version: 0.0.1
+Date: 2009-10-13
+Author: Seth Falcon <sfalcon@fhcrc.org>
+Maintainer: Seth Falcon <sfalcon@fhcrc.org>
+Description: This package provides access a critbit tree data structure 
+ also known as a PATRICIA tree.  The data structure provides efficient
+ operations for inserting and deleting elements, testing for the
+ presence of an element, and finding elements with a shared prefix.
+License: Artistic-2.0
+LazyLoad: yes

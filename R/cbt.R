@@ -1,0 +1,24 @@
+setClass("CritbitTree",
+         representation=representation(
+           cbt="externalptr"))
+
+make_cbt <-
+function() {
+  xp <- .Call(cbt_make)
+  new("CritbitTree", cbt = xp)
+}
+
+insert <-
+function(tree, what) {
+  .Call(cbt_insert, tree@cbt, what)
+}
+
+delete <-
+function(tree, what) {
+  .Call(cbt_delte, tree@cbt, what)
+}
+
+contains <-
+function(tree, what) {
+  .Call(cbt_contains, tree@cbt, what)
+}
