@@ -15,7 +15,7 @@ function(tree, what) {
 
 delete <-
 function(tree, what) {
-  .Call(cbt_delte, tree@cbt, what)
+  .Call(cbt_delete, tree@cbt, What)
 }
 
 contains <-

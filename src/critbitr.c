@@ -6,6 +6,8 @@
 SEXP cbt_make();
 SEXP cbt_insert(SEXP xp, SEXP cv);
 SEXP cbt_contains(SEXP xp, SEXP cv);
+SEXP cbt_prefix(SEXP xp, SEXP prefix);
+SEXP cbt_delete(SEXP xp, SEXP cv);
 
 static void cbt_finalizer(SEXP xp);
 
@@ -39,14 +41,52 @@ SEXP cbt_contains(SEXP xp, SEXP cv) {
     return ScalarInteger(critbit0_contains(tree, u));
 }
 
+typedef struct simple_node {
+    SEXP value;
+    struct simple_node *next;
+} simple_node;
+
+typedef struct {
+    simple_node *head;
+    int count;
+} simple_list;
+
 static int handle1(const char *v, void *arg)
 {
-    Rprintf("%s\n", v);
+    simple_list *list = (simple_list *)arg;
+    list->count += 1;
+    simple_node *node = Calloc(1, simple_node);
+    SEXP charsxp = mkChar(v);
+    PROTECT(charsxp);
+    node->value = charsxp;
+    node->next = list->head;
+    list->head = node;
     return 1;
 }
 
 SEXP cbt_prefix(SEXP xp, SEXP prefix) {
+    simple_list ans_list;
+    ans_list.head = NULL;
+    ans_list.count = 0;
     const char *p = CHAR(STRING_ELT(prefix, 0));
-    critbit0_allprefixed(R_ExternalPtrAddr(xp), p, handle1, NULL);
-    return ScalarInteger(1);
+    critbit0_allprefixed(R_ExternalPtrAddr(xp), p, handle1, &ans_list);
+    SEXP ans;
+    PROTECT(ans = NEW_CHARACTER(ans_list.count));
+    simple_node *cur_node = ans_list.head;
+    simple_node *prev_node = NULL;
+    for (int i = 0; i < ans_list.count; ++i) {
+        SET_STRING_ELT(ans, i, cur_node->value);
+        UNPROTECT_PTR(cur_node->value);
+        prev_node = cur_node;
+        cur_node = cur_node->next;
+        Free(prev_node);
+    }
+    UNPROTECT(1);
+    return ans;
+}
+
+SEXP cbt_delete(SEXP xp, SEXP cv)
+{
+    const char *p = CHAR(STRING_ELT(cv, 0));
+    return ScalarInteger(critbit0_delete(R_ExternalPtrAddr(xp), p));
 }

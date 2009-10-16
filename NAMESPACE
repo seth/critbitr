@@ -1,4 +1,5 @@
-useDynLib(critbitr, cbt_make, cbt_insert, cbt_contains, cbt_prefix)
+useDynLib(critbitr, cbt_make, cbt_insert, cbt_contains, cbt_prefix,
+          cbt_delete)
 
 export("make_cbt",
        "insert",
