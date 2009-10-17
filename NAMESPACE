@@ -5,4 +5,5 @@ export("make_cbt",
        "insert",
        "contains",
        "delete",
-       "prefix")
+       "prefix",
+       "test_cbt")
