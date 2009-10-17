@@ -38,7 +38,7 @@ SEXP cbt_insert(SEXP xp, SEXP cv) {
 SEXP cbt_contains(SEXP xp, SEXP cv) {
     const char *u = CHAR(STRING_ELT(cv, 0));
     critbit0_tree *tree = R_ExternalPtrAddr(xp);
-    return ScalarInteger(critbit0_contains(tree, u));
+    return ScalarLogical(critbit0_contains(tree, u));
 }
 
 typedef struct simple_node {
