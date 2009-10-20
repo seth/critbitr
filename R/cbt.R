@@ -27,3 +27,12 @@ prefix <-
 function(tree, prefix) {
   .Call(cbt_prefix, tree@cbt, prefix)
 }
+
+load_file <-
+function(fname) {
+  z <- make_cbt()
+  if (.Call(cbt_load_file, z@cbt, fname))
+    z
+  else
+    NULL
+}

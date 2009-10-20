@@ -9,10 +9,13 @@ SEXP cbt_contains(SEXP xp, SEXP cv);
 SEXP cbt_prefix(SEXP xp, SEXP prefix);
 SEXP cbt_delete(SEXP xp, SEXP cv);
 
+SEXP cbt_load_file(SEXP xp, SEXP cv);
+
 static void cbt_finalizer(SEXP xp);
 
 SEXP cbt_make() {
     critbit0_tree *tree = (critbit0_tree *) Calloc(1, critbit0_tree);
+    tree->root = NULL;
     SEXP xp = R_MakeExternalPtr(tree, install("critbit_tree"), R_NilValue);
     PROTECT(xp);
     R_RegisterCFinalizerEx(xp, cbt_finalizer, TRUE);
@@ -89,4 +92,20 @@ SEXP cbt_delete(SEXP xp, SEXP cv)
 {
     const char *p = CHAR(STRING_ELT(cv, 0));
     return ScalarInteger(critbit0_delete(R_ExternalPtrAddr(xp), p));
+}
+
+SEXP cbt_load_file(SEXP xp, SEXP cv) {
+    critbit0_tree *tree = R_ExternalPtrAddr(xp);
+    const char *fname = CHAR(STRING_ELT(cv, 0));
+    FILE *in = fopen(fname, "rb");
+    if (in == 0) {
+        /* handle error case */
+    }
+    char line[100];
+    while (fgets(line, 100, in) != NULL) {
+        line[32] = '\0';
+        critbit0_insert(tree, line);
+    }
+    fclose(in);
+    return ScalarLogical(1);
 }

@@ -20,6 +20,13 @@ test_cbt <- function(dir) {
   }
 }
 
+testLoadFile = function() {
+  library("critbitr")
+  z = make_cbt()
+  .Call(critbitr:::cbt_load_file, z@cbt, "dna1.txt")
+  z
+}
+
 any_errors <- function(result) {
   any(sapply(result, function(r) r$nErr > 0))
 }
@@ -27,3 +34,4 @@ any_errors <- function(result) {
 any_fail <- function(result) {
   any(sapply(result, function(r) r$nFail > 0))
 }
+
