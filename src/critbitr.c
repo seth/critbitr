@@ -45,7 +45,7 @@ SEXP cbt_contains(SEXP xp, SEXP cv) {
 }
 
 typedef struct simple_node {
-    SEXP value;
+    const char *value;
     struct simple_node *next;
 } simple_node;
 
@@ -59,9 +59,7 @@ static int handle1(const char *v, void *arg)
     simple_list *list = (simple_list *)arg;
     list->count += 1;
     simple_node *node = Calloc(1, simple_node);
-    SEXP charsxp = mkChar(v);
-    PROTECT(charsxp);
-    node->value = charsxp;
+    node->value = v;
     node->next = list->head;
     list->head = node;
     return 1;
@@ -78,8 +76,7 @@ SEXP cbt_prefix(SEXP xp, SEXP prefix) {
     simple_node *cur_node = ans_list.head;
     simple_node *prev_node = NULL;
     for (int i = 0; i < ans_list.count; ++i) {
-        SET_STRING_ELT(ans, i, cur_node->value);
-        UNPROTECT_PTR(cur_node->value);
+        SET_STRING_ELT(ans, i, mkChar(cur_node->value));
         prev_node = cur_node;
         cur_node = cur_node->next;
         Free(prev_node);
