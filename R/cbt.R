@@ -36,3 +36,8 @@ function(fname) {
   else
     NULL
 }
+
+hash_load_file <-
+function(size, fname) {
+    .Call(ht_load_file, as.integer(size), fname)
+}
