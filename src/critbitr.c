@@ -2,7 +2,6 @@
 #include <Rdefines.h>
 #include <R_ext/Rdynload.h>
 #include "critbit.h"
-#include "hash.h"
 
 SEXP cbt_make();
 SEXP cbt_insert(SEXP xp, SEXP cv);
@@ -103,42 +102,9 @@ SEXP cbt_load_file(SEXP xp, SEXP cv) {
         error("unable to open file: %s", fname);
     }
     char line[100];
-    while (fgets(line, 100, in) != NULL) {
-        //line[32] = '\0';
+    while (fscanf(in, "%100s", &line) != EOF) {
         critbit0_insert(tree, line);
     }
     fclose(in);
     return ScalarLogical(1);
-}
-
-SEXP ht_load_file(SEXP iv, SEXP cv)
-{
-    int size = INTEGER(iv)[0];
-    const char *fname = CHAR(STRING_ELT(cv, 0));
-    HTHash *ht = hash_new(size);
-
-    FILE *in = fopen(fname, "rb");
-    if (in == 0) {
-        error("unable to open file: %s", fname);
-    }
-    char line[100];
-    while (fgets(line, 100, in) != NULL) {
-        //line[32] = '\0';
-        hash_insert(ht, line);
-    }
-    fclose(in);
-    SEXP xp = R_MakeExternalPtr(ht, install("ht_hash_table"), R_NilValue);
-    PROTECT(xp);
-    R_RegisterCFinalizerEx(xp, ht_finalizer, TRUE);
-    UNPROTECT(1);
-    return xp;
-}
-
-static void ht_finalizer(SEXP xp)
-{
-    void *p = R_ExternalPtrAddr(xp);
-    if (p) {
-        hash_free(p);
-        R_ClearExternalPtr(xp);
-    }
 }

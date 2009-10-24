@@ -198,7 +198,8 @@ static int allprefixed_traverse(uint8 *top,
 
     if (1 & (intptr_t)top) {
         critbit0_node *q = (void*)(top - 1);
-        for (int direction = 0; direction < 2; ++direction)
+        int direction;
+        for (direction = 0; direction < 2; ++direction)
             switch (allprefixed_traverse(q->child[direction], handle, arg)) {
             case 1: break;
             case 0: return 0;
@@ -227,8 +228,8 @@ int critbit0_allprefixed(critbit0_tree*t, const char*prefix,
         p = q->child[direction];
         if (q->byte < ulen) top = p;
     }
-
-    for (size_t i = 0;i < ulen; ++i) {
+    size_t i;
+    for (i = 0;i < ulen; ++i) {
         if (p[i] != ubytes[i]) return 1;
     }
 

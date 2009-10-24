@@ -6,6 +6,12 @@ typedef struct {
 } critbit0_tree;
 
 int critbit0_contains(critbit0_tree *t, const char *u);
+
+/* insert a key into the tree
+   returns 1 for if the key was inserted and not previously present.
+   returns 2 if the key was already in the tree.
+   returns 0 if a (memory) error occurs.
+ */
 int critbit0_insert(critbit0_tree *t, const char *u);
 int critbit0_delete(critbit0_tree *t, const char *u);
 void critbit0_clear(critbit0_tree *t);

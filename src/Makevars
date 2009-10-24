@@ -1,0 +1,14 @@
+PKG_CFLAGS = -Wall -I./cbt
+PKG_LIBS = -L./cbt -lcbt
+
+.PHONY: all cbtlib
+
+all: $(SHLIB)
+	echo $(CFLAGS)
+$(SHLIB): cbtlib
+
+cbtlib:
+	(cd cbt; $(MAKE) clean lib test WITH_R=1 \
+         CFLAGS="$(CFLAGS) $(CPICFLAGS)" \
+         CPPFLAGS="$(CPPFLAGS)" \
+         CC="$(CC)")

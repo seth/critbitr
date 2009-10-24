@@ -1,2 +1,5 @@
 *.o
 *.so
+/src/cbt/libcbt.a
+/src/cbt/runtests
+/src/cbt/runtests.c
