@@ -5,6 +5,7 @@ PKG_LIBS = -L./cbt -lcbt
 
 all: $(SHLIB)
 	echo $(CFLAGS)
+	echo "R_HOME: ${R_HOME}"
 $(SHLIB): cbtlib
 
 cbtlib:

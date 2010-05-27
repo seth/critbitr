@@ -17,7 +17,7 @@ static void cbt_finalizer(SEXP xp);
 static void ht_finalizer(SEXP xp);
 
 SEXP cbt_make() {
-    critbit0_tree *tree = (critbit0_tree *) Calloc(1, critbit0_tree);
+    critbit_tree *tree = (critbit_tree *) Calloc(1, critbit_tree);
     tree->root = NULL;
     SEXP xp = R_MakeExternalPtr(tree, install("critbit_tree"), R_NilValue);
     PROTECT(xp);
@@ -29,7 +29,7 @@ SEXP cbt_make() {
 static void cbt_finalizer(SEXP xp) {
     void *p = R_ExternalPtrAddr(xp);
     if (p) {
-        critbit0_clear(p);
+        critbit_clear(p);
         Free(p);
         R_ClearExternalPtr(xp);
     }
@@ -37,14 +37,14 @@ static void cbt_finalizer(SEXP xp) {
 
 SEXP cbt_insert(SEXP xp, SEXP cv) {
     const char *u = CHAR(STRING_ELT(cv, 0));
-    critbit0_tree *tree = R_ExternalPtrAddr(xp);
-    return ScalarInteger(critbit0_insert(tree, u));
+    critbit_tree *tree = R_ExternalPtrAddr(xp);
+    return ScalarInteger(critbit_insert(tree, u));
 }
 
 SEXP cbt_contains(SEXP xp, SEXP cv) {
     const char *u = CHAR(STRING_ELT(cv, 0));
-    critbit0_tree *tree = R_ExternalPtrAddr(xp);
-    return ScalarLogical(critbit0_contains(tree, u));
+    critbit_tree *tree = R_ExternalPtrAddr(xp);
+    return ScalarLogical(critbit_contains(tree, u));
 }
 
 typedef struct simple_node {
@@ -73,7 +73,7 @@ SEXP cbt_prefix(SEXP xp, SEXP prefix) {
     ans_list.head = NULL;
     ans_list.count = 0;
     const char *p = CHAR(STRING_ELT(prefix, 0));
-    critbit0_allprefixed(R_ExternalPtrAddr(xp), p, handle1, &ans_list);
+    critbit_allprefixed(R_ExternalPtrAddr(xp), p, handle1, &ans_list);
     SEXP ans;
     PROTECT(ans = NEW_CHARACTER(ans_list.count));
     simple_node *cur_node = ans_list.head;
@@ -91,11 +91,11 @@ SEXP cbt_prefix(SEXP xp, SEXP prefix) {
 SEXP cbt_delete(SEXP xp, SEXP cv)
 {
     const char *p = CHAR(STRING_ELT(cv, 0));
-    return ScalarInteger(critbit0_delete(R_ExternalPtrAddr(xp), p));
+    return ScalarInteger(critbit_delete(R_ExternalPtrAddr(xp), p));
 }
 
 SEXP cbt_load_file(SEXP xp, SEXP cv) {
-    critbit0_tree *tree = R_ExternalPtrAddr(xp);
+    critbit_tree *tree = R_ExternalPtrAddr(xp);
     const char *fname = CHAR(STRING_ELT(cv, 0));
     FILE *in = fopen(fname, "rb");
     if (in == 0) {
@@ -103,7 +103,7 @@ SEXP cbt_load_file(SEXP xp, SEXP cv) {
     }
     char line[100];
     while (fscanf(in, "%100s", &line) != EOF) {
-        critbit0_insert(tree, line);
+        critbit_insert(tree, line);
     }
     fclose(in);
     return ScalarLogical(1);
